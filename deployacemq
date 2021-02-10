@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ibm-ace
+  labels:
+    app: ibm-ace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ibm-ace
+  template:
+    metadata:
+      labels:
+        app: ibm-ace
+    spec:
+      containers:
+      - name: ibm-ace
+        image: firojbadsa/acemqapp:latest 
+        env:
+        - name: LICENSE
+          value: accept
+        - name: MQ_QMGR_NAME
+          value: QM01
+        - name: ACE_SERVER_NAME
+          value: IS01
+        - name: ACE_TRUSTSTORE_PASSWORD
+          value: truststorepwd
+        - name: ACE_KEYSTORE_PASSWORD
+          value: keystorepasswd
+        ports:
+        - containerPort: 7800
+          name: http 
+        - containerPort: 1414
+          name: mq 
+        - containerPort: 7600
+          name: web
+        - containerPort: 7843
+          name: https 
+        volumeMounts:
+        - name: hostvol
+          mountPath: /home/aceuser/initial-config
+      volumes:
+        - name: hostvol
+          hostPath:
+            path: /home/cloud_user/sample/initial-config  
